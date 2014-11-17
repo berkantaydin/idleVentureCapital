@@ -1,0 +1,51 @@
+#:kivy 1.8.0
+
+<Main>:
+    rows: 3
+    spacing: "8dp"
+    row_default_height: "25dp"
+
+    Label:
+        text: "IdleVenturesCapital"
+        size_hint: 1, None
+        height: "50dp"
+        halign: "left"
+        text_size: self.width, None
+        padding: "15px", 0
+
+    ScreenManager:
+        id: sm
+
+        Screen:
+            name: "ventures"
+            scroll_x: False
+            scroll_y: True
+
+            canvas.before:
+                Color:
+                    rgb: .8, .2, .2
+                Rectangle:
+                    size: self.size
+
+    GridLayout:
+        cols: 3
+        MenuToggleButton:
+            identity: "ventures"
+            size_hint_y: None
+            height: "48dp"
+            text: "Ventures"
+            group: "menu"
+
+        MenuToggleButton:
+            identity: "achievements"
+            size_hint_y: None
+            height: "48dp"
+            text: "Achievements"
+            group: "menu"
+
+        MenuToggleButton:
+            identity: "settings"
+            size_hint_y: None
+            height: "48dp"
+            text: "Settings"
+            group: "menu"
