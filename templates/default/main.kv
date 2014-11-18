@@ -1,9 +1,40 @@
 #:kivy 1.8.0
+#:import ListAdapter kivy.adapters.listadapter.ListAdapter
+#:import Factory kivy.factory.Factory
+
+<VentureItem>:
+    orientation: "horizontal"
+    size_hint: 1, None
+    height: "60dp"
+    Image:
+        source: "templates/default/assets/coffee.png"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: root.name
+            text_size: self.width, None
+            padding_x: '5dp'
+        Label:
+            text: str(root.owned)
+            text_size: self.width, None
+            padding_x: '5dp'
+        Label:
+            text: str(root.cost)
+            text_size: self.width, None
+            padding_x: '5dp'
+        Label:
+            text: "timeleft"
+            text_size: self.width, None
+            padding_x: '5dp'
+        Label:
+            text: "progressbar"
+            text_size: self.width, None
+            padding_x: '5dp'
 
 <Main>:
     rows: 3
-    spacing: "8dp"
     row_default_height: "25dp"
+    sm:sm #screen manager
 
     Label:
         text: "IdleVenturesCapital"
@@ -27,20 +58,33 @@
                 Rectangle:
                     size: self.size
 
+            ListView:
+                adapter:
+                    ListAdapter(data=root.ventures, cls=Factory.VentureItem, args_converter=root.args_converter)
+
     GridLayout:
-        cols: 3
+        cols: 4
+        size_hint: 1, 0
         MenuToggleButton:
             identity: "ventures"
             size_hint_y: None
             height: "48dp"
             text: "Ventures"
             group: "menu"
+            state: "down"
+
+        MenuToggleButton:
+            identity: "store"
+            size_hint_y: None
+            height: "48dp"
+            text: "Store"
+            group: "menu"
 
         MenuToggleButton:
             identity: "achievements"
             size_hint_y: None
             height: "48dp"
-            text: "Achievements"
+            text: "Achieve"
             group: "menu"
 
         MenuToggleButton:
