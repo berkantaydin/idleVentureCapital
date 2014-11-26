@@ -40,7 +40,7 @@ class Game():
             self.ventures = {
                 # rat mean recent_acquisition_time
                 "allowance": {"name": "Allowance", "owned": 1, "period": 1, "cost": 0, "revenue": 4, "rat": now},
-                "lemonade": {"name": "Lemonade Stand", "owned": 0, "period": 8, "cost": 10, "revenue": 4, "rat": now},
+                "lemonade": {"name": "Lemonade Stand", "owned": 3, "period": 8, "cost": 10, "revenue": 4, "rat": now},
                 "paper": {"name": "Paper Route", "owned": 0, "period": 16, "cost": 34, "revenue": 14, "rat": now},
                 "fastfood": {"name": "Fast Food Joint", "owned": 0, "period": 32, "cost": 150, "revenue": 49, "rat": now},
                 "coffee": {"name": "Coffee Shop", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
@@ -78,20 +78,31 @@ class Game():
         for key, venture in ventures.items():
             # calculate difference
             try:
-                tdiff = rat - venture['rat']
-                if tdiff > 0:
-                    times = tdiff / venture['period']
-                    # add revenue
-                    if times > 0 and venture['owned'] > 0:
-                        gained = times * venture['revenue']
-                        if gained > 0:
-                            self.cash += gained
-                            self.gained_on_now += gained
-                            self.gained_on_total += gained
-                            del gained
+                if venture['owned'] > 0:
+                    tdiff = rat - venture['rat']
+                    if tdiff > 0:
+                        times = tdiff / venture['period']
+                        # add revenue
+                        if times > 0:
+                            gained = times * venture['revenue']
+                            if gained > 0:
+                                self.cash += gained
+                                self.gained_on_now += gained
+                                self.gained_on_total += gained
+                                del gained
 
-                            # update recent acquisition time
-                            ventures[key]['rat'] = rat
+                        timeleft = tdiff % venture['period']
+                        print timeleft
+                        m, s = divmod(timeleft, 60)
+                        h, m = divmod(m, 60)
+                        ventures[key]['timeleft'] = "%d:%02d:%02d" % (h, m, s)
+                    ventures[key]['timeleft'] = "Almost !!"
+                else:
+                    ventures[key]['timeleft'] = "0:00:00"
+
+                # update recent acquisition time
+                ventures[key]['rat'] = rat
+
             except ZeroDivisionError:
                 pass
 
@@ -124,6 +135,7 @@ class VentureItem(BoxLayout):
     owned = NumericProperty(0)
     period = NumericProperty(0)
     revenue = NumericProperty(0)
+    timeleft = StringProperty("0:00:00")
 
     # for garbage collector
     def __del__(self, *args, **kwargs):
@@ -147,6 +159,7 @@ class Main(GridLayout):
             owned=item['value']['owned'],
             period=item['value']['period'],
             revenue=item['value']['revenue'],
+            timeleft=item['value']['timeleft'],
         )
 
     def infinite_loop(self):

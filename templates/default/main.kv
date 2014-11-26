@@ -5,31 +5,60 @@
 <VentureItem>:
     orientation: "horizontal"
     size_hint: 1, None
-    height: "60dp"
-    Image:
-        source: "templates/default/assets/coffee.png"
+    height: "120dp"
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: 0.3, 1
+        Image:
+            source: "templates/default/assets/coffee.png"
+            size_hint: None, 1.0
+            halign: "left"
+            size: self.width, self.height
+        Label:
+            text: "BUY"
+            text_size: self.width, None
+            pos_hint: {'x': .30}
+            color: 0, .737, 1, 1,
+            bold: True
     BoxLayout:
         orientation: "vertical"
         Label:
             text: root.name
             text_size: self.width, None
-            padding_x: '5dp'
-        Label:
-            text: str(root.owned)
-            text_size: self.width, None
-            padding_x: '5dp'
-        Label:
-            text: str(root.cost)
-            text_size: self.width, None
-            padding_x: '5dp'
-        Label:
-            text: "timeleft"
-            text_size: self.width, None
-            padding_x: '5dp'
+        BoxLayout:
+            orientation: "horizontal"
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    text: "OWNED"
+                    text_size: self.width, None
+                    font_size: "12px"
+                Label:
+                    text: "COST"
+                    text_size: self.width, None
+                    font_size: "12px"
+                Label:
+                    text: "TIME LEFT"
+                    text_size: self.width, None
+                    font_size: "12px"
+
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    text: ": %s" % str(root.owned)
+                    text_size: self.width, None
+                    font_size: "12px"
+                Label:
+                    text: ": $ %s" % str(root.cost)
+                    text_size: self.width, None
+                    font_size: "12px"
+                Label:
+                    text: ": %s" % str(root.timeleft)
+                    text_size: self.width, None
+                    font_size: "12px"
         Label:
             text: "progressbar"
             text_size: self.width, None
-            padding_x: '5dp'
 
 <Main>:
     rows: 3
@@ -46,7 +75,7 @@
 
     BoxLayout:
         orientation: "vertical"
-        height: "50dp"
+        height: "70dp"
         size_hint: 1, None
         BoxLayout:
             orientation: "horizontal"
@@ -54,28 +83,32 @@
                 source: "templates/default/assets/crown.png"
                 size_hint: None, 1.0
                 halign: "left"
+                padding: "20dp"
             Label:
-                text: "IdleVenturesCapital"
+                text: "IDLE VENTURE CAPITAL"
+                bold: True
+                color: .333, .545, .184, 1
                 size_hint: 1, None
                 halign: "left"
                 valign: "bottom"
                 text_size: self.width, self.height
+                font_size: "20dp"
         BoxLayout:
+            padding: [10,10,10,10]
             canvas.before:
                 Color:
                     rgb: .333, .545, .184
                 Rectangle:
-                    pos: self.pos
-                    size: self.size
+                    pos: self.pos[0], self.pos[1] + 5
+                    size: self.size[0], self.size[1] - 10
             Label:
                 id: cash
                 bold: True
                 color: .133, .133, .133, 1
                 text: "$ CASH"
                 size_hint: 1.0, 1.0
-                halign: "center"
+                halign: "right"
                 text_size: self.width, self.height
-
 
     ScreenManager:
         id: sm
