@@ -38,35 +38,28 @@ class Game():
             self.gained_on_now = 0  # Total gain in current game
             self.gained_on_total = 0  # Total gain of entire game life
             self.cash = 0  # Current available cash for spend ventures
-            self.ventures = {
+            self.ventures = [
                 # rat mean recent_acquisition_time
-                "allowance": {"name": "Allowance", "owned": 1, "period": 1, "cost": 0, "revenue": 4, "rat": now},
-                "lemonade": {"name": "Lemonade Stand", "owned": 3, "period": 8, "cost": 10, "revenue": 4, "rat": now},
-                "paper": {"name": "Paper Route", "owned": 0, "period": 16, "cost": 34, "revenue": 14, "rat": now},
-                "fastfood": {"name": "Fast Food Joint", "owned": 0, "period": 32, "cost": 150, "revenue": 49, "rat": now},
-                "coffee": {"name": "Coffee Shop", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "bar": {"name": "Bar", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "lawn": {"name": "Lawn Care", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "dining": {"name": "Fine Dining", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "startup": {"name": "Startup", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "construction": {"name": "Construction", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "insurance": {"name": "Insurance", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "record": {"name": "Record Label", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "studio": {"name": "Movie Studio", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "bank": {"name": "Bank", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "team": {"name": "ProSports Team", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "oil": {"name": "Oil & Gas", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now},
-                "government": {"name": "Small Government", "owned": 0, "period": 0, "cost": 0, "revenue": 0, "rat": now}
-            }
+                {"name": "Allowance", "owned": 1, "period": 1, "cost": 0, "revenue": 4, "rat": now},
+                {"name": "Lemonade Stand", "owned": 3, "period": 8, "cost": 10, "revenue": 4, "rat": now},
+                {"name": "Paper Route", "owned": 0, "period": 16, "cost": 34, "revenue": 14, "rat": now},
+                {"name": "Fast Food Joint", "owned": 0, "period": 32, "cost": 150, "revenue": 49, "rat": now},
+                {"name": "Coffee Shop", "owned": 0, "period": 64, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Bar", "owned": 0, "period": 128, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Lawn Care", "owned": 0, "period": 256, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Fine Dining", "owned": 0, "period": 512, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Startup", "owned": 0, "period": 1028, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Construction", "owned": 0, "period": 2048, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Insurance", "owned": 0, "period": 4096, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Record Label", "owned": 0, "period": 8192, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Movie Studio", "owned": 0, "period": 16284, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Bank", "owned": 0, "period": 32568, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "ProSports Team", "owned": 0, "period": 65136, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Oil & Gas", "owned": 0, "period": 130272, "cost": 0, "revenue": 0, "rat": now},
+                {"name": "Small Government", "owned": 0, "period": 260544, "cost": 0, "revenue": 0, "rat": now}
+            ]
             DB.put('game', star=self.star, resset_total=self.resset_total, gained_on_now=self.gained_on_now,
                    gained_on_total=self.gained_on_total, cash=self.cash, ventures=self.ventures)
-
-    def convert(self, data):
-        result = []
-        for k, v in data.items():
-            tmp = dict(key=k, value=v)
-            result.append(tmp)
-        return result
 
     # TODO : owned 0'dan  1'e ilk gecisinde o venture icin rat, now'a esitlenmeli. Sadece 0'dan 1'e gecerken
     def calculate(self, instance=None):
@@ -77,7 +70,7 @@ class Game():
         except KeyError:
             rat = int(time.time())
 
-        for key, venture in ventures.items():
+        for key, venture in enumerate(ventures):
             # calculate difference
             try:
                 if venture['owned'] > 0:
@@ -115,11 +108,9 @@ class Game():
         # Update GUI
         try:
             instance.cash.text = '$ {:,.0f}'.format(self.cash)
-            instance.ventureList.adapter.data = self.convert(self.ventures)
-            instance.ventureList.adapter= ListAdapter(data=self.convert(self.ventures),
-                                args_converter=instance.args_converter,
-                                cls=VentureItem)
-
+            instance.ventureList.adapter = ListAdapter(data=self.ventures,
+                                                       args_converter=instance.args_converter,
+                                                       cls=VentureItem)
         except Exception as e:
             print e
             pass
@@ -159,13 +150,13 @@ class Main(GridLayout):
         requested for kivy Factory method.
         """
         return dict(
-            key=item['key'],
-            name=item['value']['name'],
-            cost=item['value']['cost'],
-            owned=item['value']['owned'],
-            period=item['value']['period'],
-            revenue=item['value']['revenue'],
-            timeleft=item['value']['timeleft'],
+            #key=item['key'],
+            name=item['name'],
+            cost=item['cost'],
+            owned=item['owned'],
+            period=item['period'],
+            revenue=item['revenue'],
+            timeleft=item['timeleft'],
         )
 
     def infinite_loop(self):
@@ -194,7 +185,7 @@ class Start(App):
         Builder.load_file(os.path.join(KV_DIRECTORY, "main.kv"))
         layout = Main()
         game = Game()
-        layout.ventures = game.convert(game.ventures)
+        layout.ventures = game.ventures
         game.calculate()
         return layout
     pass
