@@ -3,6 +3,7 @@ import time
 import threading
 import kivy
 kivy.require('1.8.0')
+from kivy.adapters.listadapter import ListAdapter
 from kivy.app import App, Builder
 from kivy.properties import ListProperty, StringProperty, NumericProperty
 from kivy.storage.jsonstore import JsonStore
@@ -67,6 +68,7 @@ class Game():
             result.append(tmp)
         return result
 
+    # TODO : owned 0'dan  1'e ilk gecisinde o venture icin rat, now'a esitlenmeli. Sadece 0'dan 1'e gecerken
     def calculate(self, instance=None):
         ventures = self.ventures
         try:
@@ -80,6 +82,8 @@ class Game():
             try:
                 if venture['owned'] > 0:
                     tdiff = rat - venture['rat']
+                    # update recent acquisition time
+                    ventures[key]['rat'] = int(rat - (tdiff % venture['period']))
                     if tdiff > 0:
                         times = tdiff / venture['period']
                         # add revenue
@@ -91,17 +95,14 @@ class Game():
                                 self.gained_on_total += gained
                                 del gained
 
-                        timeleft = tdiff % venture['period']
-                        print timeleft
+                        timeleft = venture['period'] - (tdiff % venture['period'])
                         m, s = divmod(timeleft, 60)
                         h, m = divmod(m, 60)
                         ventures[key]['timeleft'] = "%d:%02d:%02d" % (h, m, s)
-                    ventures[key]['timeleft'] = "Almost !!"
+                    else:
+                        ventures[key]['timeleft'] = "Almost !!"
                 else:
                     ventures[key]['timeleft'] = "0:00:00"
-
-                # update recent acquisition time
-                ventures[key]['rat'] = rat
 
             except ZeroDivisionError:
                 pass
@@ -114,6 +115,11 @@ class Game():
         # Update GUI
         try:
             instance.cash.text = '$ {:,.0f}'.format(self.cash)
+            instance.ventureList.adapter.data = self.convert(self.ventures)
+            instance.ventureList.adapter= ListAdapter(data=self.convert(self.ventures),
+                                args_converter=instance.args_converter,
+                                cls=VentureItem)
+
         except Exception as e:
             print e
             pass

@@ -65,6 +65,7 @@
     row_default_height: "25dp"
     sm:sm #screen manager
     cash: cash
+    ventureList: ventureList
 
     canvas.before:
         Color:
@@ -119,6 +120,7 @@
             scroll_y: True
 
             ListView:
+                id: ventureList
                 adapter:
                     ListAdapter(data=root.ventures, cls=Factory.VentureItem, args_converter=root.args_converter)
 
