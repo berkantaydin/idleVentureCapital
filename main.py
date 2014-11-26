@@ -67,7 +67,7 @@ class Game():
             result.append(tmp)
         return result
 
-    def calculate(self):
+    def calculate(self, instance=None):
         ventures = self.ventures
         try:
             rat = DB.get('app')['closed_time']
@@ -95,11 +95,19 @@ class Game():
             except ZeroDivisionError:
                 pass
 
-        print self.cash
-
         DB.put('game', star=self.star, resset_total=self.resset_total, gained_on_now=self.gained_on_now,
                gained_on_total=self.gained_on_total, cash=self.cash, ventures=ventures)
+
         self.ventures = ventures
+
+        # Update GUI
+        try:
+            instance.cash.text = '$ {:,.0f}'.format(self.cash)
+        except Exception as e:
+            print e
+            pass
+
+        # return self
 
 
 class MenuToggleButton(ToggleButton):
@@ -147,7 +155,7 @@ class Main(GridLayout):
                 # Stop running this thread so the main Python process can exit.
                 return
 
-            Game().calculate()
+            Game().calculate(instance=self)
             time.sleep(1)
     pass
 

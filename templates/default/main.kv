@@ -35,14 +35,47 @@
     rows: 3
     row_default_height: "25dp"
     sm:sm #screen manager
+    cash: cash
 
-    Label:
-        text: "IdleVenturesCapital"
-        size_hint: 1, None
+    canvas.before:
+        Color:
+            rgb: .133, .133, .133
+        Rectangle:
+            size: self.size
+
+
+    BoxLayout:
+        orientation: "vertical"
         height: "50dp"
-        halign: "left"
-        text_size: self.width, None
-        padding: "15px", 0
+        size_hint: 1, None
+        BoxLayout:
+            orientation: "horizontal"
+            Image:
+                source: "templates/default/assets/crown.png"
+                size_hint: None, 1.0
+                halign: "left"
+            Label:
+                text: "IdleVenturesCapital"
+                size_hint: 1, None
+                halign: "left"
+                valign: "bottom"
+                text_size: self.width, self.height
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgb: .333, .545, .184
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                id: cash
+                bold: True
+                color: .133, .133, .133, 1
+                text: "$ CASH"
+                size_hint: 1.0, 1.0
+                halign: "center"
+                text_size: self.width, self.height
+
 
     ScreenManager:
         id: sm
@@ -51,12 +84,6 @@
             name: "ventures"
             scroll_x: False
             scroll_y: True
-
-            canvas.before:
-                Color:
-                    rgb: .8, .2, .2
-                Rectangle:
-                    size: self.size
 
             ListView:
                 adapter:
