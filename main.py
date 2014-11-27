@@ -154,8 +154,9 @@ class VentureItem(BoxLayout, ListItemButton):
             if game.ventures[self.key]['owned'] == 0:
                 game.ventures[self.key]['rat'] = int(time.time())
             game.ventures[self.key]['owned'] += 1
-            game.ventures[self.key]['revenue'] = int(game.ventures[self.key]['revenue'] + (game.ventures[self.key]['period'] * .27))
-            game.ventures[self.key]['cost'] = int(game.ventures[self.key]['cost'] + (game.ventures[self.key]['period'] * 2.8))
+            game.ventures[self.key]['revenue'] = int(game.ventures[self.key]['revenue'] + (game.ventures[self.key]['period'] * .25))
+            game.ventures[self.key]['cost'] = int(game.ventures[self.key]['cost'] + (game.ventures[self.key]['period'] * 2.5))
+            game.ventures[self.key]['period'] = int(game.ventures[self.key]['period'] * 2.5)
             game.save()
 
     def select(self):
