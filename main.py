@@ -76,6 +76,7 @@ class Game():
             # calculate difference
             try:
                 ventures[key]['key'] = key
+                ventures[key]['cash'] = self.cash
                 if venture['owned'] > 0:
                     tdiff = rat - venture['rat']
                     ventures[key]['tdiff'] = tdiff
@@ -121,6 +122,10 @@ class Game():
 
         # return self
 
+    def save(self):
+        DB.put('game', star=self.star, resset_total=self.resset_total, gained_on_now=self.gained_on_now,
+               gained_on_total=self.gained_on_total, cash=self.cash, ventures=self.ventures)
+
 
 class MenuToggleButton(ToggleButton):
     def on_press(self):
@@ -132,6 +137,7 @@ class MenuToggleButton(ToggleButton):
 class VentureItem(BoxLayout, ListItemButton):
     background_color = [0, 0, 0, 0]
     key = NumericProperty(0)
+    cash = NumericProperty(0)  # Already haved cash
     name = StringProperty("")
     cost = NumericProperty(0)
     owned = NumericProperty(0)
@@ -141,7 +147,16 @@ class VentureItem(BoxLayout, ListItemButton):
     tdiff = NumericProperty(0)
 
     def do_action(self):
-        print self.key
+        game = Game()
+        # 0 is Allowance, can be upgrade with only achieves
+        if self.key != 0 and game.cash > game.ventures[self.key]['cost']:
+            game.cash -= game.ventures[self.key]['cost']
+            if game.ventures[self.key]['owned'] == 0:
+                game.ventures[self.key]['rat'] = int(time.time())
+            game.ventures[self.key]['owned'] += 1
+            game.ventures[self.key]['revenue'] = int(game.ventures[self.key]['revenue'] + (game.ventures[self.key]['period'] * .27))
+            game.ventures[self.key]['cost'] = int(game.ventures[self.key]['cost'] + (game.ventures[self.key]['period'] * 2.8))
+            game.save()
 
     def select(self):
         self.do_action()
@@ -150,7 +165,7 @@ class VentureItem(BoxLayout, ListItemButton):
         self.select()
 
     def on_press(self):
-        print "kmkmkm"
+        pass
 
     # for garbage collector
     def __del__(self, *args, **kwargs):
@@ -169,6 +184,7 @@ class Main(GridLayout):
         """
         return dict(
             key=item['key'],
+            cash=item['cash'],
             name=item['name'],
             cost=item['cost'],
             owned=item['owned'],

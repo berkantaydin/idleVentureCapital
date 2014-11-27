@@ -16,7 +16,7 @@
             halign: "left"
             size: self.width, self.height
         Label:
-            text: "BUY"
+            text: "BUY" if not root.key == 0 and int(root.cash) >= int(root.cost) else ""
             text_size: self.width, None
             pos_hint: {'x': .30}
             color: 0, .737, 1, 1,
@@ -72,9 +72,9 @@
                     pos: self.pos[0], self.pos[1] + 10
                     size: 0 if root.owned == 0 else (self.size[0] / root.period) * (root.tdiff if root.tdiff > 0 else 1) , self.size[1] - 25
             Label:
-                id: cash
+                id: revenue
                 color: 1.0, 1.0, 1.0, 1
-                text: "$ %s" % str(root.revenue)
+                text: "$ %s" % (str(root.revenue) if root.owned else "0.00")
                 size_hint: 1.0, 1.0
                 halign: "right"
                 text_size: self.width, self.height
