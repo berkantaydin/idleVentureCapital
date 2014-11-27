@@ -5,13 +5,15 @@ import kivy
 kivy.require('1.8.0')
 from kivy.adapters.listadapter import ListAdapter
 from kivy.app import App, Builder
-from kivy.properties import ListProperty, StringProperty, NumericProperty
+from kivy.properties import ListProperty, StringProperty, NumericProperty, BooleanProperty
 from kivy.storage.jsonstore import JsonStore
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.listview import ListItemButton
 
 KV_DIRECTORY = "templates/default"
 DB = JsonStore('db.json')
@@ -73,6 +75,7 @@ class Game():
         for key, venture in enumerate(ventures):
             # calculate difference
             try:
+                ventures[key]['key'] = key
                 if venture['owned'] > 0:
                     tdiff = rat - venture['rat']
                     ventures[key]['tdiff'] = tdiff
@@ -126,8 +129,9 @@ class MenuToggleButton(ToggleButton):
     pass
 
 
-class VentureItem(BoxLayout):
-    key = StringProperty("")
+class VentureItem(BoxLayout, ListItemButton):
+    background_color = [0, 0, 0, 0]
+    key = NumericProperty(0)
     name = StringProperty("")
     cost = NumericProperty(0)
     owned = NumericProperty(0)
@@ -135,6 +139,18 @@ class VentureItem(BoxLayout):
     revenue = NumericProperty(0)
     timeleft = StringProperty("0:00:00")
     tdiff = NumericProperty(0)
+
+    def do_action(self):
+        print self.key
+
+    def select(self):
+        self.do_action()
+
+    def deselect(self):
+        self.select()
+
+    def on_press(self):
+        print "kmkmkm"
 
     # for garbage collector
     def __del__(self, *args, **kwargs):
@@ -152,7 +168,7 @@ class Main(GridLayout):
         requested for kivy Factory method.
         """
         return dict(
-            #key=item['key'],
+            key=item['key'],
             name=item['name'],
             cost=item['cost'],
             owned=item['owned'],
