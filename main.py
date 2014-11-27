@@ -40,7 +40,7 @@ class Game():
             self.cash = 0  # Current available cash for spend ventures
             self.ventures = [
                 # rat mean recent_acquisition_time
-                {"name": "Allowance", "owned": 1, "period": 1, "cost": 0, "revenue": 4, "rat": now},
+                {"name": "Allowance", "owned": 1, "period": 4, "cost": 0, "revenue": 4, "rat": now},
                 {"name": "Lemonade Stand", "owned": 3, "period": 8, "cost": 10, "revenue": 4, "rat": now},
                 {"name": "Paper Route", "owned": 0, "period": 16, "cost": 34, "revenue": 14, "rat": now},
                 {"name": "Fast Food Joint", "owned": 0, "period": 32, "cost": 150, "revenue": 49, "rat": now},
@@ -75,6 +75,7 @@ class Game():
             try:
                 if venture['owned'] > 0:
                     tdiff = rat - venture['rat']
+                    ventures[key]['tdiff'] = tdiff
                     # update recent acquisition time
                     ventures[key]['rat'] = int(rat - (tdiff % venture['period']))
                     if tdiff > 0:
@@ -87,7 +88,7 @@ class Game():
                                 self.gained_on_now += gained
                                 self.gained_on_total += gained
                                 del gained
-
+                    if tdiff < venture['period']:
                         timeleft = venture['period'] - (tdiff % venture['period'])
                         m, s = divmod(timeleft, 60)
                         h, m = divmod(m, 60)
@@ -133,6 +134,7 @@ class VentureItem(BoxLayout):
     period = NumericProperty(0)
     revenue = NumericProperty(0)
     timeleft = StringProperty("0:00:00")
+    tdiff = NumericProperty(0)
 
     # for garbage collector
     def __del__(self, *args, **kwargs):
@@ -157,6 +159,7 @@ class Main(GridLayout):
             period=item['period'],
             revenue=item['revenue'],
             timeleft=item['timeleft'],
+            tdiff=item['tdiff'] if 'tdiff' in item else 0
         )
 
     def infinite_loop(self):

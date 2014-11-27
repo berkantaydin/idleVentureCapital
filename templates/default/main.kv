@@ -56,9 +56,33 @@
                     text: ": %s" % str(root.timeleft)
                     text_size: self.width, None
                     font_size: "12px"
-        Label:
-            text: "progressbar"
-            text_size: self.width, None
+        BoxLayout:
+            padding: [10,10,10,10]
+            canvas.before:
+                Color:
+                    rgb: .0, .0, .0
+                Rectangle:
+                    pos: self.pos[0], self.pos[1] + 10
+                    size: self.size[0], self.size[1] - 25
+            canvas:
+                Color:
+                    rgb: .717, .109, .109
+                Rectangle:
+                    pos: self.pos[0], self.pos[1] + 10
+                    size: 0 if root.owned == 0 else (self.size[0] / root.period) * (root.tdiff if root.tdiff > 0 else 1) , self.size[1] - 25
+            Label:
+                id: cash
+                color: 1.0, 1.0, 1.0, 1
+                text: "$ %s" % str(root.revenue)
+                size_hint: 1.0, 1.0
+                halign: "right"
+                text_size: self.width, self.height
+        #ProgressBar:
+        #    max: root.period
+        #    value: root.tdiff
+        #    size_hint: .9, 1
+        #    size: self.width, "50dp"
+        #    color: .717, .109, .109, 1
 
 <Main>:
     rows: 3
