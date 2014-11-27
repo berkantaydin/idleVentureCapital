@@ -1,6 +1,7 @@
 #:kivy 1.8.0
 #:import ListAdapter kivy.adapters.listadapter.ListAdapter
 #:import Factory kivy.factory.Factory
+#:import SlideTransition kivy.uix.screenmanager.SlideTransition
 
 <VentureItem>:
     key: root.key
@@ -78,19 +79,14 @@
                 size_hint: 1.0, 1.0
                 halign: "right"
                 text_size: self.width, self.height
-        #ProgressBar:
-        #    max: root.period
-        #    value: root.tdiff
-        #    size_hint: .9, 1
-        #    size: self.width, "50dp"
-        #    color: .717, .109, .109, 1
 
 <Main>:
     rows: 3
     row_default_height: "25dp"
-    sm:sm #screen manager
+    sm: sm #screen manager
     cash: cash
     ventureList: ventureList
+    menu: menu
 
     canvas.before:
         Color:
@@ -138,6 +134,7 @@
 
     ScreenManager:
         id: sm
+        transition: SlideTransition(direction="down")
 
         Screen:
             name: "ventures"
@@ -149,34 +146,83 @@
                 adapter:
                     ListAdapter(data=root.ventures, cls=Factory.VentureItem, args_converter=root.args_converter)
 
+        Screen:
+            name: "store"
+
+        Screen:
+            name: "achievements"
+
+        Screen:
+            name: "settings"
+
     GridLayout:
+        id: menu
         cols: 4
-        size_hint: 1, 0
-        MenuToggleButton:
+        size_hint: 1, 0.02
+        valign: "bottom"
+        size: self.size
+        ToggleButton:
             identity: "ventures"
             size_hint_y: None
-            height: "48dp"
-            text: "Ventures"
+            height: "60dp"
             group: "menu"
             state: "down"
-
-        MenuToggleButton:
+            background_color: 0, .690, 1, 1
+            background_normal: ""
+            background_down: ""
+            border:  0, .690, 1, 1
+            on_release: root.sm.current = 'ventures'
+            StackLayout:
+                pos: self.parent.pos
+                size: self.parent.size
+                Image:
+                    source: "templates/default/assets/stats.png"
+        ToggleButton:
             identity: "store"
             size_hint_y: None
-            height: "48dp"
-            text: "Store"
+            height: "60dp"
             group: "menu"
+            background_color: 0, .690, 1, 1
+            background_normal: ""
+            background_down: ""
+            border:  0, .690, 1, 1
+            on_release: root.sm.current = 'store'
+            StackLayout:
+                pos: self.parent.pos
+                size: self.parent.size
+                Image:
+                    source: "templates/default/assets/diamond.png"
 
-        MenuToggleButton:
+        ToggleButton:
             identity: "achievements"
             size_hint_y: None
-            height: "48dp"
-            text: "Achieve"
+            height: "60dp"
             group: "menu"
+            background_color: 0, .690, 1, 1
+            background_normal: ""
+            background_down: ""
+            border:  0, .690, 1, 1
+            on_release: root.sm.current = 'achievements'
+            StackLayout:
+                pos: self.parent.pos
+                size: self.parent.size
+                Image:
+                    source: "templates/default/assets/flag.png"
 
-        MenuToggleButton:
+        ToggleButton:
             identity: "settings"
             size_hint_y: None
-            height: "48dp"
-            text: "Settings"
+            height: "60dp"
             group: "menu"
+            #background_color: 0, .6, 1.0, 1
+            #background_color: 0, .568, .917, 1
+            background_color: 0, .690, 1, 1
+            background_normal: ""
+            background_down: ""
+            border:  0, .690, 1, 1
+            on_release: root.sm.current = 'settings'
+            StackLayout:
+                pos: self.parent.pos
+                size: self.parent.size
+                Image:
+                    source: "templates/default/assets/settings.png"

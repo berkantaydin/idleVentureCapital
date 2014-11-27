@@ -127,13 +127,6 @@ class Game():
                gained_on_total=self.gained_on_total, cash=self.cash, ventures=self.ventures)
 
 
-class MenuToggleButton(ToggleButton):
-    def on_press(self):
-        if self.identity == "settings":
-            print "you are now settings"
-    pass
-
-
 class VentureItem(BoxLayout, ListItemButton):
     background_color = [0, 0, 0, 0]
     key = NumericProperty(0)
